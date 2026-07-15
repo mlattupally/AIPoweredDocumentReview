@@ -1,0 +1,216 @@
+{
+  "Comment": "Batch Healthcare Submission Processing using Distributed Map. Triggered manually with: {\"bucket\": \"healthcare-submissions-poc\", \"prefix\": \"submissions/\"}",
+  "StartAt": "ProcessAllSubmissions",
+  "QueryLanguage": "JSONata",
+  "States": {
+    "ProcessAllSubmissions": {
+      "Type": "Map",
+      "Comment": "Distributed Map reads ALL files from S3 prefix and processes each one in parallel",
+      "ItemReader": {
+        "Resource": "arn:aws:states:::s3:listObjectsV2",
+        "Arguments": {
+          "Bucket": "{% $states.input.bucket %}",
+          "Prefix": "{% $states.input.prefix %}"
+        }
+      },
+      "ItemSelector": {
+        "s3Bucket": "{% $states.context.Execution.Input.bucket %}",
+        "s3Key": "{% $states.context.Map.Item.Value.Key %}"
+      },
+      "MaxConcurrency": 5,
+      "ToleratedFailurePercentage": 20,
+      "ItemProcessor": {
+        "StartAt": "ReadContents",
+        "States": {
+          "ReadContents": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::lambda:invoke",
+            "Output": "{% $states.result.Payload %}",
+            "Arguments": {
+              "Payload": "{% $states.input %}",
+              "FunctionName": "arn:aws:lambda:us-east-2:529544622571:function:ReadSubmissionLambda:$LATEST"
+            },
+            "Retry": [
+              {
+                "ErrorEquals": [
+                  "Lambda.ServiceException",
+                  "Lambda.AWSLambdaException",
+                  "Lambda.SdkClientException",
+                  "Lambda.TooManyRequestsException"
+                ],
+                "IntervalSeconds": 1,
+                "MaxAttempts": 3,
+                "BackoffRate": 2,
+                "JitterStrategy": "FULL"
+              }
+            ],
+            "Next": "ValidateAndRiskAssement-AI"
+          },
+          "ValidateAndRiskAssement-AI": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::lambda:invoke",
+            "Output": "{% $states.result.Payload %}",
+            "Arguments": {
+              "Payload": "{% $states.input %}",
+              "FunctionName": "arn:aws:lambda:us-east-2:529544622571:function:ValidateLambdaAI:$LATEST"
+            },
+            "Retry": [
+              {
+                "ErrorEquals": [
+                  "Lambda.ServiceException",
+                  "Lambda.AWSLambdaException",
+                  "Lambda.SdkClientException",
+                  "Lambda.TooManyRequestsException"
+                ],
+                "IntervalSeconds": 1,
+                "MaxAttempts": 3,
+                "BackoffRate": 2,
+                "JitterStrategy": "FULL"
+              }
+            ],
+            "Next": "RouteByAIRecommendation"
+          },
+          "RouteByAIRecommendation": {
+            "Type": "Choice",
+            "Choices": [
+              {
+                "Condition": "{% $states.input.validation.recommendation = 'AUTO_APPROVE' %}",
+                "Next": "AutoApprove",
+                "Comment": "Low Risk(0-30)"
+              },
+              {
+                "Condition": "{% $states.input.validation.recommendation = 'HUMAN_REVIEW' %}",
+                "Next": "PickReviewer-AI",
+                "Comment": "Medium Risk(31-70)"
+              },
+              {
+                "Condition": "{% $states.input.validation.recommendation = 'AUTO_REJECT' %}",
+                "Next": "AutoReject",
+                "Comment": "High Risk(71-100)"
+              }
+            ]
+          },
+          "AutoApprove": {
+            "Type": "Pass",
+            "Output": {
+              "status": "AUTO_APPROVED",
+              "submissionId": "{% $states.input.validation.submissionId %}",
+              "organizationName": "{% $states.input.validation.organizationName %}",
+              "riskScore": "{% $states.input.validation.riskScore %}",
+              "message": "Submission automatically approved — risk score below threshold"
+            },
+            "Next": "PublishSubmissionResult"
+          },
+          "PickReviewer-AI": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::lambda:invoke",
+            "Output": "{% $states.result.Payload %}",
+            "Arguments": {
+              "Payload": "{% $states.input %}",
+              "FunctionName": "arn:aws:lambda:us-east-2:529544622571:function:AssignReviewerWithAI:$LATEST"
+            },
+            "Retry": [
+              {
+                "ErrorEquals": [
+                  "Lambda.ServiceException",
+                  "Lambda.AWSLambdaException",
+                  "Lambda.SdkClientException",
+                  "Lambda.TooManyRequestsException"
+                ],
+                "IntervalSeconds": 1,
+                "MaxAttempts": 3,
+                "BackoffRate": 2,
+                "JitterStrategy": "FULL"
+              }
+            ],
+            "Next": "SendEmailToReviewerAndWait"
+          },
+          "SendEmailToReviewerAndWait": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+            "Arguments": {
+              "FunctionName": "arn:aws:lambda:us-east-2:529544622571:function:SendReviewRequestEmailHandler:$LATEST",
+              "Payload": {
+                "taskToken": "{% $states.context.Task.Token %}",
+                "submissionId": "{% $states.input.validation.submissionId %}",
+                "organizationName": "{% $states.input.validation.organizationName %}",
+                "riskScore": "{% $states.input.validation.riskScore %}",
+                "issues": "{% $states.input.validation.issues %}",
+                "primaryContact": "{% $states.input.validation.primaryContact %}",
+                "reviewerEmail": "{% $states.input.reviewer.reviewerEmail %}"
+              }
+            },
+            "Retry": [
+              {
+                "ErrorEquals": [
+                  "Lambda.ServiceException",
+                  "Lambda.AWSLambdaException",
+                  "Lambda.SdkClientException",
+                  "Lambda.TooManyRequestsException"
+                ],
+                "IntervalSeconds": 1,
+                "MaxAttempts": 3,
+                "BackoffRate": 2,
+                "JitterStrategy": "FULL"
+              }
+            ],
+            "Next": "PublishSubmissionResult"
+          },
+          "AutoReject": {
+            "Type": "Pass",
+            "Output": {
+              "status": "AUTO_REJECTED",
+              "submissionId": "{% $states.input.validation.submissionId %}",
+              "organizationName": "{% $states.input.validation.organizationName %}",
+              "riskScore": "{% $states.input.validation.riskScore %}",
+              "issues": "{% $states.input.validation.issues %}",
+              "message": "Submission automatically rejected — risk score exceeds threshold"
+            },
+            "Next": "PublishSubmissionResult"
+          },
+          "PublishSubmissionResult": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::sns:publish",
+            "Arguments": {
+              "TopicArn": "arn:aws:sns:us-east-2:529544622571:SubmissionResults",
+              "Subject": "{% 'Submission ' & $string($states.input.submissionId) & ': ' & $string($states.input.status) %}",
+              "Message": "{% $string($states.input) %}",
+              "MessageAttributes": {
+                "status": {
+                  "DataType": "String",
+                  "StringValue": "{% $string($states.input.status) %}"
+                },
+                "submissionId": {
+                  "DataType": "String",
+                  "StringValue": "{% $string($states.input.submissionId) %}"
+                }
+              }
+            },
+            "End": true
+          }
+        }
+      },
+      "Next": "PublishBatchResult"
+    },
+    "PublishBatchResult": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Arguments": {
+        "TopicArn": "arn:aws:sns:us-east-2:529544622571:SubmissionResults",
+        "Subject": "Batch Healthcare Submission Results",
+        "Message": "{% $string($states.input) %}",
+        "MessageAttributes": {
+          "batchSize": {
+            "DataType": "Number",
+            "StringValue": "{% $string($count($states.input)) %}"
+          },
+          "executionId": {
+            "DataType": "String",
+            "StringValue": "{% $states.context.Execution.Id %}"
+          }
+        }
+      },
+      "End": true
+    }
+  }
+}

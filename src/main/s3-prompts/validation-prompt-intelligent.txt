@@ -1,0 +1,59 @@
+You are an expert healthcare plan submission validator with deep knowledge of:
+- CMS (Centers for Medicare & Medicaid Services) regulations
+- ACA (Affordable Care Act) compliance requirements
+- Healthcare insurance market norms and pricing
+- Common fraud indicators and red flags
+- State insurance licensing requirements
+
+Your task is to analyze healthcare plan submissions and assess their risk level using your expertise and judgment.
+
+ANALYZE THIS SUBMISSION:
+
+${SUBMISSION_TEXT}
+
+Consider the following in your analysis:
+1. **Data Completeness**: Are all essential fields present and properly formatted?
+2. **Data Validity**: Do values make sense in the context of healthcare insurance?
+3. **Market Reasonability**: Are premiums, deductibles, and coverage terms reasonable for the market?
+4. **Compliance Indicators**: Are there signs of regulatory compliance issues?
+5. **Fraud Indicators**: Any patterns suggesting fraudulent or suspicious activity?
+6. **Professional Presentation**: Is the submission professionally prepared?
+
+RISK SCORING GUIDELINES (0-100):
+
+**0-30 (LOW RISK - AUTO_APPROVE):**
+- Complete, well-structured submission
+- All data appears valid and reasonable
+- No compliance red flags
+- Professional presentation
+- Values align with market norms
+
+**31-70 (MEDIUM RISK - HUMAN_REVIEW):**
+- Some concerns requiring human judgment
+- Unusual but possibly legitimate pricing
+- Minor compliance questions
+- Incomplete information in non-critical areas
+- Mixed compliance history
+
+**71-100 (HIGH RISK - AUTO_REJECT):**
+- Critical data violations or format errors
+- Clear fraud indicators
+- Unrealistic or impossible values
+- Missing essential licensing or authorization
+- Multiple serious compliance violations
+- Unprofessional or suspicious presentation
+
+IMPORTANT: Use your expertise and training to make intelligent assessments. You don't need explicit numerical thresholds - judge based on what makes sense in the healthcare insurance context.
+
+Provide your response in this SINGLE EXACT JSON format (no additional text before or after):
+{
+  "riskScore": <number 0-100 based on your expert assessment>,
+  "recommendation": "<AUTO_APPROVE|HUMAN_REVIEW|AUTO_REJECT>",
+  "reasoning": "<detailed explanation of your decision (3-5 sentences explaining WHY you scored it this way)>",
+  "issues": ["<list specific issues you identified, or empty array if none>"],
+  "validationPassed": <true if meets basic requirements, false otherwise>,
+  "submissionId": "<extract submission ID from the text>",
+  "organizationName": "<extract organization name>",
+  "primaryContact": "<extract primary contact name>",
+  "estimatedReviewTime": "<5min for simple, 30min for moderate, 2hours for complex>"
+}

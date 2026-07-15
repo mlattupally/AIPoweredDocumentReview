@@ -1,0 +1,66 @@
+HEALTHCARE PLAN SUBMISSION
+==========================
+
+SUBMISSION ID: SUB-2024-003789
+SUBMISSION DATE: 2024-01-17
+ORGANIZATION ID: ORG-12345
+ORGANIZATION NAME: QuickCare Insurance LLC
+
+CONTACT INFORMATION
+-------------------
+Primary Contact: John Doe
+Title: Manager
+Email: contact@quickcare
+Phone: 555-0000
+Secondary Contact: Not provided
+
+PLAN DETAILS
+------------
+
+PLAN 1:
+Plan Name: Super Saver Plan
+Plan Type: HMO
+Coverage Area: All states
+Premium (Monthly): $99
+Deductible (Annual): $9500
+Out-of-Pocket Maximum: $15000
+Copay Primary Care: $50
+Copay Specialist: $100
+Emergency Room: $1000
+Prescription Drug Coverage: Generic only, $25 copay
+Network Size: 500 providers
+Effective Date: 2024-02-01
+
+PLAN 2:
+Plan Name: Premium Gold
+Plan Type: PPO
+Coverage Area: California
+Premium (Monthly): $1850
+Deductible (Annual): $500
+Out-of-Pocket Maximum: $3000
+Copay Primary Care: $0
+Copay Specialist: $0
+Emergency Room: $50
+Prescription Drug Coverage: All free
+Network Size: 100000 providers
+Effective Date: 2024-02-01
+
+COMPLIANCE INFORMATION
+----------------------
+ACA Compliant: Pending
+State License Number: Not yet issued
+Federal Tax ID: 12-3456789
+NAIC Company Code: Pending assignment
+Previous Submissions: 15 (8 rejected, 5 pending, 2 approved)
+Outstanding Issues: Multiple compliance violations noted in previous submissions, pending state investigation
+
+ATTESTATION
+-----------
+I hereby certify that all information provided in this submission is accurate and complete.
+
+Attested By: J. Doe
+Title: Manager
+Date: 2024-01-17
+Signature: Not provided
+
+END OF SUBMISSION

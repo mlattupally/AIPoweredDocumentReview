@@ -1,0 +1,173 @@
+{
+  "Comment": "A description of my state machine",
+  "StartAt": "ReadContents",
+  "QueryLanguage": "JSONata",
+  "States": {
+    "ReadContents": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Output": "{% $states.result.Payload %}",
+      "Arguments": {
+        "Payload": "{% $states.input %}",
+        "FunctionName": "arn:aws:lambda:us-east-2:529544622571:function:ReadSubmissionLambda:$LATEST"
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "Next": "ValidateAndRiskAssement-AI"
+    },
+    "ValidateAndRiskAssement-AI": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Output": "{% $states.result.Payload %}",
+      "Arguments": {
+        "Payload": "{% $states.input %}",
+        "FunctionName": "arn:aws:lambda:us-east-2:529544622571:function:ValidateLambdaAI:$LATEST"
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "Next": "RouteByAIRecommendation"
+    },
+    "RouteByAIRecommendation": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Condition": "{% $states.input.validation.recommendation = 'AUTO_APPROVE' %}",
+          "Next": "AutoApprove",
+          "Comment": "Low Risk(0-30)"
+        },
+        {
+          "Condition": "{% $states.input.validation.recommendation = 'HUMAN_REVIEW' %}",
+          "Next": "PickReviewer-AI",
+          "Comment": "Medium Risk(31-70)"
+        },
+        {
+          "Condition": "{% $states.input.validation.recommendation = 'AUTO_REJECT' %}",
+          "Next": "AutoReject",
+          "Comment": "High Risk(71-100)"
+        }
+      ]
+    },
+    "AutoApprove": {
+      "Type": "Pass",
+      "Output": {
+        "status": "AUTO_APPROVED",
+        "submissionId": "{% $states.input.validation.submissionId %}",
+        "organizationName": "{% $states.input.validation.organizationName %}",
+        "riskScore": "{% $states.input.validation.riskScore %}",
+        "message": "Submission automatically approved — risk score below threshold"
+      },
+      "Next": "PublishResult"
+    },
+    "PickReviewer-AI": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Output": "{% $states.result.Payload %}",
+      "Arguments": {
+        "Payload": "{% $states.input %}",
+        "FunctionName": "arn:aws:lambda:us-east-2:529544622571:function:AssignReviewerWithAI:$LATEST"
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "Next": "SendEmailToReviewerAndWait"
+    },
+    "SendEmailToReviewerAndWait": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+      "Arguments": {
+        "FunctionName": "arn:aws:lambda:us-east-2:529544622571:function:SendReviewRequestEmailHandler:$LATEST",
+        "Payload": {
+          "taskToken": "{% $states.context.Task.Token %}",
+          "submissionId": "{% $states.input.validation.submissionId %}",
+          "organizationName": "{% $states.input.validation.organizationName %}",
+          "riskScore": "{% $states.input.validation.riskScore %}",
+          "issues": "{% $states.input.validation.issues %}",
+          "primaryContact": "{% $states.input.validation.primaryContact %}",
+          "reviewerEmail": "{% $states.input.reviewer.reviewerEmail %}"
+        }
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "Next": "PublishResult"
+    },
+    "AutoReject": {
+      "Type": "Pass",
+      "Output": {
+        "status": "AUTO_REJECTED",
+        "submissionId": "{% $states.input.validation.submissionId %}",
+        "organizationName": "{% $states.input.validation.organizationName %}",
+        "riskScore": "{% $states.input.validation.riskScore %}",
+        "issues": "{% $states.input.validation.issues %}",
+        "message": "Submission automatically rejected — risk score exceeds threshold"
+      },
+      "Next": "PublishResult"
+    },
+    "PublishResult": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Arguments": {
+        "TopicArn": "arn:aws:sns:us-east-2:529544622571:SubmissionResults",
+        "Subject": "{% 'Healthcare Submission Result: ' & $states.input.status %}",
+        "Message": "{% $string($states.input) %}",
+        "MessageAttributes": {
+          "status": {
+            "DataType": "String",
+            "StringValue": "{% $states.input.status %}"
+          },
+          "submissionId": {
+            "DataType": "String",
+            "StringValue": "{% $states.input.submissionId %}"
+          }
+        }
+      },
+      "End": true
+    }
+  }
+}

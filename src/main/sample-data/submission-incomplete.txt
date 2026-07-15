@@ -1,0 +1,67 @@
+HEALTHCARE PLAN SUBMISSION
+==========================
+
+SUBMISSION ID: SUB-2024-004012
+SUBMISSION DATE: 2024-01-18
+ORGANIZATION ID: ORG-HC-77889
+ORGANIZATION NAME: Midwest Family Health Plans
+
+CONTACT INFORMATION
+-------------------
+Primary Contact: Jennifer Thompson
+Title: Compliance Officer
+Email: jthompson@midwestfamily.com
+Phone: (555) 444-5555
+
+PLAN DETAILS
+------------
+
+PLAN 1:
+Plan Name: Family First HMO
+Plan Type: HMO
+Coverage Area: Illinois, Wisconsin
+Premium (Monthly): $575
+Deductible (Annual): $2000
+Out-of-Pocket Maximum: $6500
+Copay Primary Care: $20
+Copay Specialist: $45
+Emergency Room: $300
+Prescription Drug Coverage: To be determined
+Network Size: 12000 providers
+Effective Date: 2024-05-01
+
+PLAN 2:
+Plan Name:
+Plan Type: PPO
+Coverage Area:
+Premium (Monthly):
+Deductible (Annual):
+Out-of-Pocket Maximum:
+Copay Primary Care:
+Copay Specialist:
+Emergency Room:
+Prescription Drug Coverage:
+Network Size:
+Effective Date:
+
+COMPLIANCE INFORMATION
+----------------------
+ACA Compliant: Yes
+State License Number: IL-INS-778899
+Federal Tax ID: 36-7654321
+NAIC Company Code:
+Previous Submissions: 1 (approved)
+Outstanding Issues: Missing documentation for Plan 2
+
+ATTESTATION
+-----------
+I hereby certify that all information provided in this submission is accurate and complete to the best of my knowledge. I understand that any false or misleading information may result in rejection of this submission and potential penalties.
+
+Attested By: Jennifer Thompson
+Title: Compliance Officer
+Date: 2024-01-18
+Signature: [Electronic Signature on File]
+
+NOTE: This is a partial submission. Complete Plan 2 details will be submitted by 2024-02-01.
+
+END OF SUBMISSION

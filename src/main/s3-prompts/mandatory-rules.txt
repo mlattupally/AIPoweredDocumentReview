@@ -1,0 +1,56 @@
+MANDATORY COMPLIANCE RULES (Federal/State Requirements)
+═══════════════════════════════════════════════════════════════════════
+
+These rules are derived from federal and state regulations and MUST be enforced strictly.
+
+1. ORGANIZATION IDENTIFICATION
+   ❌ REJECT if: Organization ID does not follow format "ORG-HC-#####" (5 digits)
+   Regulation: CMS Provider Identification Standard (45 CFR 162)
+
+2. STATE LICENSING
+   ❌ REJECT if: State license number is missing, invalid, or listed as "pending" or "not issued"
+   Regulation: State Insurance Commissioner requirements (varies by state)
+
+3. CONTACT INFORMATION
+   ❌ REJECT if: Email address is invalid (missing @ symbol or domain like .com, .org)
+   ❌ REJECT if: Phone number is obviously fake (e.g., 555-0000, all zeros)
+   Regulation: CMS Contact Information Requirements
+
+4. ATTESTATION
+   ❌ REJECT if: Attestation signature is missing or listed as "not provided"
+   Regulation: ACA Section 1311 - Certification Requirements
+
+5. PREMIUM LIMITS (Hard Boundaries)
+   ❌ REJECT if: Premium is less than $50/month (financially non-viable, fraud risk)
+   ❌ REJECT if: Premium is more than $5000/month (unreasonable, potential fraud)
+   Regulation: Market conduct standards
+
+6. DEDUCTIBLE LIMITS (ACA Compliance)
+   ❌ REJECT if: Deductible exceeds $9,450/year for individual plans (2024 ACA limit)
+   ❌ REJECT if: Deductible is $0 while premium is suspiciously low (fraud indicator)
+   Regulation: ACA Section 1302 - Cost-sharing limits
+
+7. REQUIRED FIELDS
+   ❌ REJECT if ANY of these are missing:
+   - Organization Name
+   - Primary Contact Name
+   - Contact Email
+   - At least one plan with: Name, Type, Premium, Deductible
+   - Compliance Information section
+   - Attestation section
+   Regulation: CMS Submission Requirements
+
+8. PREVIOUS COMPLIANCE HISTORY
+   ❌ REJECT if: 50% or more previous submissions were rejected AND there is a pending state investigation
+   Regulation: Pattern of non-compliance standard
+
+═══════════════════════════════════════════════════════════════════════
+IMPORTANT NOTES
+═══════════════════════════════════════════════════════════════════════
+
+- These are BRIGHT-LINE rules - no judgment needed
+- Any violation = automatic rejection recommendation
+- Document which specific rule(s) were violated
+- Cite the regulation in your reasoning
+
+For all OTHER aspects (pricing reasonability, coverage quality, risk assessment, etc.) - use your expert judgment freely.

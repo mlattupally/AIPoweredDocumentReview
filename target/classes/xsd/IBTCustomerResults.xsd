@@ -1,0 +1,716 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns="http://crds.ets.org/crdsnet/schema/IBTCustomerResults" xmlns:mstns="http://crds.ets.org/crdsnet/schema/IBTCustomerResults" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mtt="http://crds.ets.org/crdsnet/schema/MTTPerfAssess" xmlns:mst="http://crds.ets.org/crdsnet/schema/MSTAssessmentResult" targetNamespace="http://crds.ets.org/crdsnet/schema/IBTCustomerResults" elementFormDefault="qualified" version="2.0">
+	<xs:annotation>
+		<xs:documentation>CRDS schema for iBT customer results</xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="http://crds.ets.org/crdsnet/schema/MTTPerfAssess" schemaLocation="./MTTPerfAssess.xsd"/>
+	<xs:import namespace="http://crds.ets.org/crdsnet/schema/MSTAssessmentResult" schemaLocation="./MSTAssessmentResult.xsd"/>
+	<xs:element name="CustomerRecord">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="CustomerResultData">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="RegistrationSystemId" minOccurs="0">
+								<xs:simpleType>
+									<xs:restriction base="xs:normalizedString">
+										<xs:maxLength value="6"/>
+										<xs:minLength value="1"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="AppointmentNumber" type="AppointmentNumberType"/>
+							<xs:element name="FieldScoreConfigVersion" type="xs:string" minOccurs="0"/>
+							<xs:element name="TestDate" type="xs:dateTime"/>
+							<xs:element name="CustomerName" type="CustomerNameType"/>
+							<xs:element name="TestPackageCode" type="ComponentIDType"/>
+							<xs:element name="FormCode">
+								<xs:simpleType>
+									<xs:restriction base="normalizedStringNonEmpty">
+										<xs:maxLength value="20"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="TestName" type="normalizedStringNonEmpty"/>
+							<xs:element name="TestCenter" type="TestCenterType"/>
+							<xs:element name="OperationalEssayCount" type="xs:nonNegativeInteger"/>
+							<xs:element name="OperationalAudioCount" type="xs:nonNegativeInteger"/>
+							<xs:element name="OperationalVideoCount" type="xs:nonNegativeInteger" minOccurs="0"/>
+							<xs:element name="NonStandardAccomodations" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="NonStandardAccomodation" type="NonStandardAccommodationType" minOccurs="0" maxOccurs="unbounded"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="ApntmtMetaData" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="ApntmtMetaDataField" type="ApntmtMetaDataFieldType" minOccurs="0" maxOccurs="unbounded"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="InstitutionCodes" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Attending" minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="AttendingInstitution" type="InstitutionCodeType" maxOccurs="unbounded"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="Designated" minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="DesignatedInstitution" type="InstitutionCodeType" maxOccurs="unbounded"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="AdministrationDate" type="xs:date" minOccurs="0"/>
+							<xs:element name="AdministrationCode" type="xs:string" minOccurs="0"/>
+							<xs:element name="CandidateProfileID" type="xs:string" minOccurs="0"/>
+							<xs:element name="Session">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="SessionResult" type="SessionResultType"/>
+										<xs:element name="Timings" type="CalculationsType" minOccurs="0"/>
+										<xs:choice>
+											<xs:sequence>
+												<xs:element ref="mst:MSTAssessmentResult" minOccurs="0"/>
+												<xs:element name="Test" type="TestType" maxOccurs="unbounded"/>
+												<xs:element name="ScoreResults" type="ScoreResultsType" minOccurs="0"/>
+											</xs:sequence>
+											<xs:sequence>
+												<xs:element name="TestSet" type="TestSetType" maxOccurs="unbounded"/>
+											</xs:sequence>
+										</xs:choice>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element ref="mtt:mttPerformanceAssessment" minOccurs="0"/>
+				<xs:element name="CustomerImage" type="xs:base64Binary" minOccurs="0"/>
+				<xs:element name="Biometrics" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="BiometricMetaData" type="BiometricMetaDataType" minOccurs="1" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="CustomerEventData" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:choice minOccurs="0" maxOccurs="unbounded">
+								<xs:element name="AdminOverrideEvent" type="EventLogType"/>
+								<xs:element name="AudioPlaybackDirectionEvent" type="EventLogType"/>
+								<xs:element name="AudioRecordDirectionEvent" type="EventLogType"/>
+								<xs:element name="ComponentEvent" type="EventLogType"/>
+								<xs:element name="ReviewEvent" type="EventLogType"/>
+								<xs:element name="ScheduledBreakEvent" type="EventLogType"/>
+								<xs:element name="UnscheduledBreakEvent" type="EventLogType"/>
+								<xs:element name="HelpEvent" type="EventLogType"/>
+								<xs:element name="ReferenceEvent" type="EventLogType"/>
+								<xs:element name="GISEvent" type="EventLogType"/>
+								<xs:element name="MessageEvent" type="EventLogType"/>
+								<xs:element name="ScoreEvent" type="EventLogType"/>
+								<xs:element name="CalculatorEvent" type="EventLogType"/>
+								<xs:element name="BlockingEvent" type="EventLogType"/>
+								<xs:element name="TestDirectionEvent" type="EventLogType"/>
+								<xs:element name="SectionDirectionEvent" type="EventLogType"/>
+								<xs:element name="SetDirectionEvent" type="EventLogType"/>
+								<xs:element name="GroupDirectionEvent" type="EventLogType"/>
+								<xs:element name="SetLeaderEvent" type="EventLogType"/>
+								<xs:element name="TestSessionEvent" type="EventLogType"/>
+								<xs:element name="SessionEvent" type="EventLogType"/>
+								<xs:element name="TestEvent" type="EventLogType"/>
+								<xs:element name="SectionEvent" type="EventLogType"/>
+								<xs:element name="ItemSetEvent" type="EventLogType"/>
+								<xs:element name="ItemEvent" type="EventLogType"/>
+								<xs:element name="TutorialEvent" type="EventLogType"/>
+								<xs:element name="VolumeControlEvent" type="EventLogType"/>
+								<xs:element name="Event" type="EventLogType"/>
+								<xs:element name="WorkstationEvent" type="EventLogType"/>
+								<xs:element name="ServerEvent" type="EventLogType"/>
+							</xs:choice>
+						</xs:sequence>
+						<xs:attribute name="valid" type="xs:boolean" use="optional"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="schemaVersion" type="SchemaVersionType" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="TestSetType">
+		<xs:sequence>
+			<xs:element name="FormCode">
+				<xs:simpleType>
+					<xs:restriction base="normalizedStringNonEmpty">
+						<xs:maxLength value="20"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="TestScriptSetComponentID" type="ComponentIDType" minOccurs="0"/>
+			<xs:element name="FieldScoreConfigVersion" type="xs:string" minOccurs="0"/>
+			<xs:element name="ScoreReportingFlag" type="ScoreReportingFlagType"/>
+			<xs:element ref="mst:MSTAssessmentResult" minOccurs="0"/>
+			<xs:element name="Test" type="TestType" maxOccurs="unbounded"/>
+			<xs:element name="ScoreResults" type="ScoreResultsType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TestType">
+		<xs:sequence>
+			<xs:element name="TestResult" type="TestResultType"/>
+			<xs:element name="Timings" type="CalculationsType" minOccurs="0"/>
+			<xs:element name="Section" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="SectionResult" type="SectionResultType"/>
+						<xs:element name="Timings" type="CalculationsType" minOccurs="0"/>
+						<xs:choice maxOccurs="unbounded">
+							<xs:element name="Composite" type="CompositeType"/>
+							<xs:element name="CompositeCR" type="CompositeCRType"/>
+							<xs:element name="FillinBlank" type="FillinBlankType"/>
+							<xs:element name="GenericStringCR" type="GenericStringCRType"/>
+							<xs:element name="MultipleFillinBlank" type="MultipleFillinBlankType"/>
+							<xs:element name="Item" type="ItemType"/>
+							<xs:element name="Essay" type="EssayType"/>
+							<xs:element name="Audio" type="AudioType"/>
+							<xs:element name="Video" type="VideoType"/>
+						</xs:choice>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ScoreResultsType">
+		<xs:sequence>
+			<xs:element name="ScoreResult" type="ScoreResultType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TestCenterType">
+		<xs:sequence>
+			<xs:element name="TestCenterCode" type="normalizedStringNonEmpty"/>
+			<xs:element name="Name" type="normalizedStringNonEmpty"/>
+			<xs:element name="AddressLine1" type="xs:normalizedString" minOccurs="0"/>
+			<xs:element name="AddressLine2" type="xs:normalizedString" minOccurs="0"/>
+			<xs:element name="City" type="xs:normalizedString" minOccurs="0"/>
+			<xs:element name="StateProvince" type="xs:normalizedString" minOccurs="0"/>
+			<xs:element name="CountryCode" type="normalizedStringNonEmpty"/>
+			<xs:element name="PostalCode" type="xs:normalizedString" minOccurs="0"/>
+			<xs:element name="TimeZone" type="normalizedStringNonEmpty"/>
+			<xs:element name="DaylightSavingsIndicator" type="xs:boolean" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="AppointmentNumberType">
+		<xs:restriction base="xs:normalizedString">
+			<xs:length value="16"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="CustomerNameType">
+		<xs:sequence>
+			<xs:element name="FirstName" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:normalizedString">
+						<xs:maxLength value="30"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="MiddleName" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:normalizedString">
+						<xs:maxLength value="30"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="LastName">
+				<xs:simpleType>
+					<xs:restriction base="normalizedStringNonEmpty">
+						<xs:maxLength value="32"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SessionResultType">
+		<xs:sequence>
+			<xs:element name="TestSessionScriptComponentID" type="ComponentIDType"/>
+			<xs:element name="SessionNumber" type="xs:nonNegativeInteger"/>
+			<xs:element name="RestartCount" type="xs:nonNegativeInteger"/>
+			<xs:element name="LastRestartCode" type="xs:nonNegativeInteger"/>
+			<xs:element name="ScoreReportingFlag" type="ScoreReportingFlagType"/>
+			<xs:element name="ResearchPermissionFlag">
+				<xs:simpleType>
+					<xs:restriction base="xs:nonNegativeInteger">
+						<xs:enumeration value="0"/>
+						<xs:enumeration value="1"/>
+						<xs:enumeration value="2"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="TerminationType" type="TerminationType"/>
+			<xs:element name="TestCenterLabCode" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="10"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="TestCenterSeatCode" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="10"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="ScoreReportingFlagType">
+		<xs:restriction base="xs:nonNegativeInteger">
+			<xs:enumeration value="0"/>
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="TestResultType">
+		<xs:sequence>
+			<xs:element name="TestScriptComponentID" type="ComponentIDType"/>
+			<xs:element name="TestSequenceNo" type="xs:nonNegativeInteger"/>
+			<xs:element name="SKMDataVersionID" type="ComponentIDType" minOccurs="0"/>
+			<xs:element name="SKMPinComponentID" type="ComponentIDType" minOccurs="0"/>
+			<xs:element name="TestUnitLogicalName" type="normalizedStringNonEmpty"/>
+			<xs:element name="TerminationType" type="TerminationType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SectionResultType">
+		<xs:sequence>
+			<xs:element name="SectionComponentID" type="ComponentIDType"/>
+			<xs:element name="SectionSequenceNo" type="xs:nonNegativeInteger"/>
+			<xs:element name="SectionAllotedTime" type="xs:duration"/>
+			<xs:element name="SectionDeliveryMode">
+				<xs:simpleType>
+					<xs:restriction base="xs:nonNegativeInteger">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="3"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="OperationalComponentCode" type="ComponentIDType"/>
+			<xs:element name="NonOperationalComponentCode" type="ComponentIDType" minOccurs="0"/>
+			<xs:element name="RemainingTime" type="xs:duration"/>
+			<xs:element name="ItemOperationalCnt" type="xs:nonNegativeInteger"/>
+			<xs:element name="ItemPretestCnt" type="xs:nonNegativeInteger"/>
+			<xs:element name="TerminationType" type="TerminationType"/>
+			<xs:element name="SectionType">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:enumeration value="Operational"/>
+						<xs:enumeration value="Pretest"/>
+						<xs:enumeration value="Research"/>
+						<xs:enumeration value="ExamineeCollection"/>
+						<xs:enumeration value="Sample"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ItemResultType">
+		<xs:sequence>
+			<xs:element name="ItemComponentID" type="ComponentIDType"/>
+			<xs:element name="DeliverySeqNo" type="xs:integer"/>
+			<xs:element name="ItemTypeCode">
+				<xs:simpleType>
+					<xs:restriction base="xs:nonNegativeInteger">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="2"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="EditCode" type="xs:integer"/>
+			<xs:element name="ItemSeqNo" type="xs:nonNegativeInteger"/>
+			<xs:element name="ThetaScore" type="xs:decimal" minOccurs="0"/>
+			<xs:element name="SimulationPoolItemNo" type="xs:integer" minOccurs="0"/>
+			<xs:element name="ResponseCnt" type="xs:nonNegativeInteger" minOccurs="0"/>
+			<xs:element name="ItemScoreNo" type="xs:decimal"/>
+			<xs:element name="ItemScoreType">
+				<xs:simpleType>
+					<xs:restriction base="xs:nonNegativeInteger">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="2"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="ResponseDataFormat">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:enumeration value="-99"/>
+						<xs:enumeration value="1"/>
+						<xs:enumeration value="2"/>
+						<xs:enumeration value="3"/>
+						<xs:enumeration value="4"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="ResponseType">
+				<xs:simpleType>
+					<xs:restriction base="xs:nonNegativeInteger">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="50"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="MouseClickCount" type="xs:nonNegativeInteger"/>
+			<xs:element name="MarkedReturnedFlag" type="xs:boolean"/>
+			<xs:element name="RevisedCount" type="xs:nonNegativeInteger"/>
+			<xs:element name="ItemTableCode" type="ComponentIDType"/>
+			<xs:element name="ItemTableItemSequenceNo" type="xs:nonNegativeInteger"/>
+			<xs:element name="TerminationType" type="TerminationType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="EssayResultType">
+		<xs:complexContent>
+			<xs:extension base="ItemResultType">
+				<xs:sequence>
+					<xs:element name="EssayEntryMode">
+						<xs:simpleType>
+							<xs:restriction base="xs:nonNegativeInteger">
+								<xs:minInclusive value="1"/>
+								<xs:maxInclusive value="2"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="EssayTopic" type="ComponentIDType" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AudioResultType">
+		<xs:complexContent>
+			<xs:extension base="ItemResultType">
+				<xs:sequence>
+					<xs:element name="AudioFileLocation" type="xs:anyURI" minOccurs="0"/>
+					<xs:element name="AudioFileByteSize" type="xs:nonNegativeInteger" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="VideoResultType">
+		<xs:complexContent>
+			<xs:extension base="ItemResultType">
+				<xs:sequence>
+					<xs:element name="VideoFileLocation" type="xs:anyURI" minOccurs="0"/>
+					<xs:element name="VideoFileByteSize" type="xs:nonNegativeInteger" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ItemResponseType">
+		<xs:sequence>
+			<xs:element name="ItemResponseSeqNo" type="xs:nonNegativeInteger"/>
+			<xs:element name="Length" type="xs:nonNegativeInteger"/>
+			<xs:element name="Response" type="xs:string"/>
+			<xs:element name="KeystrokeLog" type="xs:base64Binary" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ItemType">
+		<xs:sequence>
+			<xs:element name="ItemResult" type="ItemResultType"/>
+			<xs:element name="Timings" type="CalculationsType" minOccurs="0"/>
+			<xs:element name="ItemResponse" type="ItemResponseType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="EssayType">
+		<xs:sequence>
+			<xs:element name="EssayResult" type="EssayResultType"/>
+			<xs:element name="Timings" type="CalculationsType" minOccurs="0"/>
+			<xs:element name="ItemResponse" type="ItemResponseType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Attachments" type="AttachmentsType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AudioType">
+		<xs:sequence>
+			<xs:element name="AudioResult" type="AudioResultType"/>
+			<xs:element name="Timings" type="CalculationsType" minOccurs="0"/>
+			<xs:element name="Attachments" type="AttachmentsType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="VideoType">
+		<xs:sequence>
+			<xs:element name="VideoResult" type="VideoResultType"/>
+			<xs:element name="Timings" type="CalculationsType" minOccurs="0"/>
+			<xs:element name="Attachments" type="AttachmentsType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AttachmentsType">
+		<xs:sequence>
+			<xs:element name="Attachment" type="xs:anyURI" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PartResponseType">
+		<xs:complexContent>
+			<xs:extension base="ItemResponseType">
+				<xs:choice>
+					<xs:sequence>
+						<xs:element name="EssayEntryMode">
+							<xs:simpleType>
+								<xs:restriction base="xs:nonNegativeInteger">
+									<xs:minInclusive value="1"/>
+									<xs:maxInclusive value="2"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="EssayTopic" type="ComponentIDType" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:sequence>
+						<xs:element name="AudioFileLocation" type="xs:anyURI" minOccurs="0"/>
+						<xs:element name="AudioFileByteSize" type="xs:nonNegativeInteger" minOccurs="0"/>
+					</xs:sequence>
+					<xs:sequence>
+						<xs:element name="VideoFileLocation" type="xs:anyURI" minOccurs="0"/>
+						<xs:element name="VideoFileByteSize" type="xs:nonNegativeInteger" minOccurs="0"/>
+					</xs:sequence>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CompositeType">
+		<xs:sequence>
+			<xs:element name="CompositeResult" type="ItemResultType"/>
+			<xs:element name="Timings" type="CalculationsType" minOccurs="0"/>
+			<xs:element name="Part" type="PartType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CompositeCRType">
+		<xs:sequence>
+			<xs:element name="CompositeResult" type="ItemResultType"/>
+			<xs:element name="Timings" type="CalculationsType" minOccurs="0"/>
+			<xs:element name="Part" type="PartType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PartType">
+		<xs:sequence>
+			<xs:element name="ResponseCnt" type="xs:nonNegativeInteger"/>
+			<xs:element name="ItemResponse" type="PartResponseType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:string" use="required"/>
+		<xs:attribute name="partSeq" type="xs:nonNegativeInteger" use="required"/>
+		<xs:attribute name="responseType" type="xs:nonNegativeInteger" use="required"/>
+		<xs:attribute name="responseClass" type="xs:nonNegativeInteger" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="FillinBlankType">
+		<xs:sequence>
+			<xs:element name="FillinBlankResult" type="ItemResultType"/>
+			<xs:element name="Timings" type="CalculationsType" minOccurs="0"/>
+			<xs:element name="ItemResponse" type="ItemResponseType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="GenericStringCRType">
+		<xs:sequence>
+			<xs:element name="GenericStringCRResult" type="ItemResultType"/>
+			<xs:element name="Timings" type="CalculationsType" minOccurs="0"/>
+			<xs:element name="ItemResponse" type="ItemResponseType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="MultipleFillinBlankType">
+		<xs:sequence>
+			<xs:element name="FillinBlankResult" type="ItemResultType"/>
+			<xs:element name="Timings" type="CalculationsType" minOccurs="0"/>
+			<xs:element name="ItemResponse" type="ItemResponseType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="EventLogType">
+		<xs:sequence>
+			<xs:element name="SequenceNo" type="xs:nonNegativeInteger"/>
+			<xs:element name="TimeStamp" type="xs:dateTime"/>
+			<xs:element name="TestComponentCode" type="ComponentIDType" minOccurs="0"/>
+			<xs:element name="ParentTestComponentCode" type="ComponentIDType" minOccurs="0"/>
+			<xs:element name="EventReasonType" type="xs:string" minOccurs="0"/>
+			<xs:element name="DetailText" type="xs:string"/>
+		</xs:sequence>
+		<xs:attribute name="EventStatusCode" type="EventStatusCodeType" use="required"/>
+	</xs:complexType>
+	<xs:simpleType name="EventStatusCodeType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="Started"/>
+			<xs:enumeration value="Ended"/>
+			<xs:enumeration value="Down"/>
+			<xs:enumeration value="TimeExpired"/>
+			<xs:enumeration value="ClientMessage"/>
+			<xs:enumeration value="Processed"/>
+			<xs:enumeration value="Blocked"/>
+			<xs:enumeration value="BlockedWithoutScore"/>
+			<xs:enumeration value="BlockedScoreRightIfSeen"/>
+			<xs:enumeration value="BlockedScoreRightIfAnswered"/>
+			<xs:enumeration value="EventSendToClient"/>
+			<xs:enumeration value="EventFromClient"/>
+			<xs:enumeration value="ResponseChanged"/>
+			<xs:enumeration value="UIChanged"/>
+			<xs:enumeration value="Exception"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ComponentIDType">
+		<xs:restriction base="xs:normalizedString">
+			<xs:length value="23"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TerminationType">
+		<xs:restriction base="xs:integer">
+			<xs:enumeration value="-99"/>
+			<xs:enumeration value="0"/>
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+			<xs:enumeration value="4"/>
+			<xs:enumeration value="5"/>
+			<xs:enumeration value="6"/>
+			<xs:enumeration value="7"/>
+			<xs:enumeration value="8"/>
+			<xs:enumeration value="9"/>
+			<xs:enumeration value="10"/>
+			<xs:enumeration value="11"/>
+			<xs:enumeration value="12"/>
+			<xs:enumeration value="13"/>
+			<xs:enumeration value="14"/>
+			<xs:enumeration value="15"/>
+			<xs:enumeration value="16"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="CalculationsType">
+		<xs:sequence>
+			<xs:element name="ElapsedTime" type="xs:duration"/>
+			<xs:element name="ComponentStartDateTime" type="xs:dateTime"/>
+			<xs:element name="ComponentEndDateTime" type="xs:dateTime"/>
+			<xs:element name="ReviewTime" type="xs:duration" minOccurs="0"/>
+			<xs:element name="ScheduledBreakTime" type="xs:duration" minOccurs="0"/>
+			<xs:element name="UnscheduledBreakTime" type="xs:duration" minOccurs="0"/>
+			<xs:element name="TotalBreakTime" type="xs:duration" minOccurs="0"/>
+			<xs:element name="HelpTime" type="xs:duration" minOccurs="0"/>
+			<xs:element name="ReferenceTime" type="xs:duration" minOccurs="0"/>
+			<xs:element name="GISTime" type="xs:duration" minOccurs="0"/>
+			<xs:element name="CalculatorTime" type="xs:duration" minOccurs="0"/>
+			<xs:element name="TestDirectionTime" type="xs:duration" minOccurs="0"/>
+			<xs:element name="SectionDirectionTime" type="xs:duration" minOccurs="0"/>
+			<xs:element name="SetDirectionTime" type="xs:duration" minOccurs="0"/>
+			<xs:element name="GroupDirectionTime" type="xs:duration" minOccurs="0"/>
+			<xs:element name="StimulusTime" type="xs:duration" minOccurs="0"/>
+			<xs:element name="ItemSetTime" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:duration">
+							<xs:attribute name="ComponentID" type="ComponentIDType"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ComputerWorkingTime" type="xs:duration" minOccurs="0"/>
+			<xs:element name="InitialItemExposureTime" type="xs:duration" minOccurs="0"/>
+			<xs:element name="RestartTime" type="xs:duration" minOccurs="0"/>
+			<xs:element name="ReviewCount" type="xs:nonNegativeInteger" minOccurs="0"/>
+			<xs:element name="ItemVisitCount" type="xs:nonNegativeInteger" minOccurs="0"/>
+			<xs:element name="HelpVisitCount" type="xs:nonNegativeInteger" minOccurs="0"/>
+			<xs:element name="ReferenceCount" type="xs:nonNegativeInteger" minOccurs="0"/>
+			<xs:element name="CalculatorUsageCount" type="xs:nonNegativeInteger" minOccurs="0"/>
+			<xs:element name="RestartCount" type="xs:nonNegativeInteger" minOccurs="0"/>
+			<xs:element name="ItemRevisedCount" type="xs:nonNegativeInteger" minOccurs="0"/>
+			<xs:element name="VolumeControlCount" type="xs:nonNegativeInteger" minOccurs="0"/>
+			<xs:element name="AudioPlaybackDirectionTime" type="xs:duration" minOccurs="0"/>
+			<xs:element name="AudioRecordDirectionTime" type="xs:duration" minOccurs="0"/>
+			<xs:element name="TotalBreakCount" type="xs:nonNegativeInteger" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="SchemaVersionType">
+		<xs:restriction base="xs:token">
+			<xs:pattern value="\d{2}.\d{2}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="normalizedStringNonEmpty">
+		<xs:restriction base="xs:normalizedString">
+			<xs:minLength value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="NonStandardAccommodationType">
+		<xs:simpleContent>
+			<xs:extension base="xs:token">
+				<xs:attribute name="Description" use="optional"/>
+				<xs:attribute name="TimeMultiplier" type="xs:float" use="optional"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="ScoreResultType">
+		<xs:sequence>
+			<xs:element name="ScoreSequenceNo" type="xs:string"/>
+			<xs:element name="ScoreName" type="normalizedStringNonEmpty"/>
+			<xs:element name="ScoreValue" type="xs:string"/>
+			<xs:element name="ScoreType" type="xs:string"/>
+			<xs:element name="TestUnitLogicalName" type="normalizedStringNonEmpty" minOccurs="0"/>
+			<xs:element name="SKMScorePrintableFlag" type="xs:boolean"/>
+			<xs:element name="SKMScoreDisplayableFlag" type="xs:boolean"/>
+			<xs:element name="ScoreDescription" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Appointment metadata is primarily used to capture generic appointment related data.</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="ApntmtMetaDataFieldType">
+		<xs:sequence>
+			<xs:element name="ApntmtMetaDataFieldName" type="normalizedStringNonEmpty"/>
+			<xs:element name="ApntmtMetaDataFieldValue" type="xs:normalizedString" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Institution code is used to capture attending and designated institution data.</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="InstitutionCodeType">
+		<xs:sequence>
+			<xs:element name="Departments" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Department" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:attribute name="Code" type="xs:string" use="required"/>
+								<xs:attribute name="Name" type="xs:string" use="required"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ScoreReporting" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="TestScore" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:attribute name="Name" type="xs:string" use="required"/>
+								<xs:attribute name="Send" type="xs:boolean" use="required"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="Code" type="xs:string" use="required"/>
+		<xs:attribute name="Name" type="xs:string" use="required"/>
+		<xs:attribute name="Type" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="BiometricMetaDataType">
+		<xs:sequence>
+			<xs:element name="BinaryData" type="xs:base64Binary" minOccurs="0"/>	
+			<xs:element name="CaptureAttempts" type="xs:nonNegativeInteger" minOccurs="0"/>
+			<xs:element name="CaptureDate" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="ConfigChecksum" type="xs:normalizedString" minOccurs="0"/>
+			<xs:element name="CaptureDuration" type="xs:nonNegativeInteger" minOccurs="0"/>
+			<xs:element name="QualityCheckResult" type="xs:nonNegativeInteger" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="Type" type="BiometricType" use="optional"/>
+	</xs:complexType>
+	<xs:simpleType name="BiometricType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="Voice"/>
+			<xs:enumeration value="Face"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

@@ -1,0 +1,11 @@
+com\poc\handlers\UpdateSubmissionStatusHandler.class
+com\poc\handlers\ValidateWithAIHandler$1.class
+com\poc\handlers\ReadSubmissionHandler.class
+com\poc\handlers\SendReviewRequestWithCallbackHandler.class
+com\poc\handlers\ProcessReviewDecisionHandler.class
+com\poc\handlers\AssignReviewerWithAIHandler$1.class
+com\poc\handlers\ValidateWithAIHandler.class
+com\poc\handlers\AssignReviewerWithAIHandler$2.class
+com\poc\handlers\AssignReviewerWithAIHandler.class
+com\poc\handlers\ValidateWithAIHandler$2.class
+com\poc\handlers\DashboardAPIHandler.class

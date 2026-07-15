@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Healthcare Plan Submission Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f0f4f8;
+      color: #2d3748;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 100%);
+      color: white;
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    header .brand { display: flex; align-items: center; gap: 14px; }
+    header .brand .icon {
+      width: 44px; height: 44px; background: rgba(255,255,255,0.15);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+    }
+    header h1 { font-size: 20px; font-weight: 700; }
+    header p  { font-size: 12px; opacity: 0.75; margin-top: 2px; }
+    header .refresh-area { display: flex; align-items: center; gap: 12px; }
+    #lastUpdated { font-size: 12px; opacity: 0.75; }
+    #refreshBtn {
+      background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3);
+      color: white; padding: 7px 16px; border-radius: 6px; cursor: pointer;
+      font-size: 13px; transition: background 0.2s;
+    }
+    #refreshBtn:hover { background: rgba(255,255,255,0.3); }
+
+    /* ── Layout ── */
+    main { max-width: 1300px; margin: 0 auto; padding: 28px 24px; }
+
+    /* ── API Config Banner ── */
+    #configBanner {
+      background: #ebf8ff; border: 1px solid #90cdf4; border-radius: 8px;
+      padding: 12px 18px; margin-bottom: 24px; display: flex;
+      align-items: center; gap: 12px; font-size: 13px; color: #2b6cb0;
+    }
+    #apiUrlInput {
+      flex: 1; padding: 6px 10px; border: 1px solid #90cdf4; border-radius: 5px;
+      font-size: 13px; color: #2d3748;
+    }
+    #connectBtn {
+      background: #3182ce; color: white; border: none; padding: 7px 14px;
+      border-radius: 5px; cursor: pointer; font-size: 13px;
+    }
+    #connectBtn:hover { background: #2b6cb0; }
+
+    /* ── Stat Cards ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: white; border-radius: 12px;
+      padding: 22px 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      display: flex; align-items: center; gap: 16px;
+      border-left: 4px solid transparent;
+    }
+    .stat-card.total   { border-color: #4299e1; }
+    .stat-card.approved{ border-color: #48bb78; }
+    .stat-card.pending { border-color: #ed8936; }
+    .stat-card.rejected{ border-color: #fc8181; }
+
+    .stat-icon {
+      width: 48px; height: 48px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; font-size: 22px;
+    }
+    .stat-card.total    .stat-icon { background: #ebf8ff; }
+    .stat-card.approved .stat-icon { background: #f0fff4; }
+    .stat-card.pending  .stat-icon { background: #fffaf0; }
+    .stat-card.rejected .stat-icon { background: #fff5f5; }
+
+    .stat-info .label { font-size: 12px; color: #718096; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-info .value { font-size: 32px; font-weight: 700; line-height: 1.1; margin-top: 2px; }
+    .stat-card.total    .value { color: #2b6cb0; }
+    .stat-card.approved .value { color: #276749; }
+    .stat-card.pending  .value { color: #c05621; }
+    .stat-card.rejected .value { color: #c53030; }
+    .stat-info .sub { font-size: 12px; color: #a0aec0; margin-top: 3px; }
+
+    /* ── Two-column lower section ── */
+    .lower-grid {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 20px;
+    }
+
+    /* ── Panel ── */
+    .panel {
+      background: white; border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08); overflow: hidden;
+    }
+    .panel-header {
+      padding: 16px 20px; border-bottom: 1px solid #e2e8f0;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .panel-header h2 { font-size: 15px; font-weight: 600; }
+    .panel-header .badge {
+      background: #ebf8ff; color: #2b6cb0; font-size: 11px;
+      font-weight: 600; padding: 3px 9px; border-radius: 20px;
+    }
+
+    /* ── Table ── */
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      background: #f7fafc; padding: 11px 16px; text-align: left;
+      font-size: 11px; font-weight: 600; color: #718096;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    tbody tr { border-bottom: 1px solid #f0f4f8; transition: background 0.15s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #f7fafc; }
+    tbody td { padding: 13px 16px; font-size: 13px; }
+    .sub-id { font-family: monospace; font-size: 12px; color: #4a5568; }
+    .org-name { font-weight: 500; }
+
+    /* ── Status badges ── */
+    .badge-status {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    }
+    .badge-status::before { content: "●"; font-size: 8px; }
+    .badge-status.APPROVED       { background: #f0fff4; color: #276749; }
+    .badge-status.REJECTED       { background: #fff5f5; color: #c53030; }
+    .badge-status.PENDING_REVIEW { background: #fffaf0; color: #c05621; }
+    .badge-status.PENDING        { background: #fffaf0; color: #c05621; }
+    .badge-status.PROCESSING     { background: #ebf8ff; color: #2b6cb0; }
+
+    /* ── Risk score bar ── */
+    .risk-cell { min-width: 110px; }
+    .risk-bar-wrap { display: flex; align-items: center; gap: 8px; }
+    .risk-bar-bg {
+      flex: 1; height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;
+    }
+    .risk-bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s; }
+    .risk-val { font-size: 12px; font-weight: 600; min-width: 26px; text-align: right; }
+
+    /* ── Reviewers panel ── */
+    .reviewer-list { padding: 4px 0; }
+    .reviewer-item {
+      padding: 14px 20px; border-bottom: 1px solid #f0f4f8;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .reviewer-item:last-child { border-bottom: none; }
+    .reviewer-top { display: flex; align-items: center; justify-content: space-between; }
+    .reviewer-name { font-weight: 600; font-size: 13px; }
+    .reviewer-level {
+      font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px;
+      text-transform: uppercase; letter-spacing: 0.4px;
+    }
+    .level-SENIOR { background: #fef3c7; color: #92400e; }
+    .level-JUNIOR { background: #e0e7ff; color: #3730a3; }
+    .level-LEAD   { background: #d1fae5; color: #065f46; }
+    .workload-bar-bg {
+      height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;
+    }
+    .workload-bar-fill { height: 100%; border-radius: 4px; transition: width 0.4s; }
+    .workload-meta { display: flex; justify-content: space-between; font-size: 11px; color: #718096; }
+
+    /* ── Empty / Loading ── */
+    .empty-state {
+      padding: 40px; text-align: center; color: #a0aec0; font-size: 14px;
+    }
+    .spinner {
+      display: inline-block; width: 18px; height: 18px;
+      border: 3px solid #e2e8f0; border-top-color: #3182ce;
+      border-radius: 50%; animation: spin 0.7s linear infinite;
+      vertical-align: middle; margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Processing banner ── */
+    #processingBanner {
+      display: none; background: #ebf8ff; border: 1px solid #90cdf4;
+      border-radius: 8px; padding: 10px 18px; margin-bottom: 18px;
+      font-size: 13px; color: #2b6cb0; align-items: center; gap: 8px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .lower-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 500px) {
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="icon">🏥</div>
+    <div>
+      <h1>Healthcare Plan Submission Dashboard</h1>
+      <p>Powered by AWS Step Functions + AI Validation</p>
+    </div>
+  </div>
+  <div class="refresh-area">
+    <span id="lastUpdated">Not loaded yet</span>
+    <button id="refreshBtn" onclick="loadData()">↻ Refresh</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- API config -->
+  <div id="configBanner">
+    <span>🔗 API URL:</span>
+    <input id="apiUrlInput" type="text" placeholder="https://your-api-id.execute-api.us-east-1.amazonaws.com/prod/dashboard" />
+    <button id="connectBtn" onclick="connectToApi()">Connect</button>
+    <span style="color:#718096">— or using demo data</span>
+  </div>
+
+  <!-- In-flight banner -->
+  <div id="processingBanner">
+    <span class="spinner"></span>
+    <strong>Processing:</strong>&nbsp;<span id="processingId"></span>
+  </div>
+
+  <!-- Stat cards -->
+  <div class="stats-grid">
+    <div class="stat-card total">
+      <div class="stat-icon">📋</div>
+      <div class="stat-info">
+        <div class="label">Total Submissions</div>
+        <div class="value" id="totalCount">—</div>
+        <div class="sub">All time</div>
+      </div>
+    </div>
+    <div class="stat-card approved">
+      <div class="stat-icon">✅</div>
+      <div class="stat-info">
+        <div class="label">Auto Approved</div>
+        <div class="value" id="approvedCount">—</div>
+        <div class="sub" id="approvedPct">—</div>
+      </div>
+    </div>
+    <div class="stat-card pending">
+      <div class="stat-icon">⏳</div>
+      <div class="stat-info">
+        <div class="label">Pending Review</div>
+        <div class="value" id="pendingCount">—</div>
+        <div class="sub">Awaiting human</div>
+      </div>
+    </div>
+    <div class="stat-card rejected">
+      <div class="stat-icon">❌</div>
+      <div class="stat-info">
+        <div class="label">Rejected</div>
+        <div class="value" id="rejectedCount">—</div>
+        <div class="sub" id="rejectedPct">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lower section -->
+  <div class="lower-grid">
+
+    <!-- Submissions table -->
+    <div class="panel">
+      <div class="panel-header">
+        <h2>Recent Submissions</h2>
+        <span class="badge" id="subsBadge">last 10</span>
+      </div>
+      <div id="tableWrap">
+        <div class="empty-state"><span class="spinner"></span> Loading submissions…</div>
+      </div>
+    </div>
+
+    <!-- Reviewers panel -->
+    <div class="panel">
+      <div class="panel-header">
+        <h2>Reviewer Workload</h2>
+        <span class="badge" id="reviewerBadge">0 active</span>
+      </div>
+      <div id="reviewerList" class="reviewer-list">
+        <div class="empty-state"><span class="spinner"></span> Loading reviewers…</div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+  // ── State ──
+  let apiUrl = null;
+
+  // ── Demo data (used when no API is connected) ──
+  const DEMO_DATA = {
+    totalCount: 10,
+    approvedCount: 6,
+    pendingCount: 3,
+    rejectedCount: 1,
+    currentlyProcessing: null,
+    recentSubmissions: [
+      { submissionId: "SUB-2024-001234", organizationName: "BlueCross Health Plans Inc.", status: "APPROVED",       riskScore: 18, decision: "AUTO_APPROVE",  timestamp: "2024-01-15T14:32:00Z", reviewer: "—",           processingTime: "12s" },
+      { submissionId: "SUB-2024-001235", organizationName: "Midwest Medical Group",       status: "PENDING_REVIEW", riskScore: 54, decision: "HUMAN_REVIEW",  timestamp: "2024-01-15T14:45:00Z", reviewer: "Alice Wong",  processingTime: "9s"  },
+      { submissionId: "SUB-2024-001236", organizationName: "SunState Insurance Co.",      status: "REJECTED",       riskScore: 88, decision: "AUTO_REJECT",   timestamp: "2024-01-15T15:01:00Z", reviewer: "—",           processingTime: "7s"  },
+      { submissionId: "SUB-2024-001237", organizationName: "Horizon Health Network",      status: "APPROVED",       riskScore: 22, decision: "AUTO_APPROVE",  timestamp: "2024-01-15T15:18:00Z", reviewer: "—",           processingTime: "11s" },
+      { submissionId: "SUB-2024-001238", organizationName: "Valley Care Partners",        status: "PENDING_REVIEW", riskScore: 61, decision: "HUMAN_REVIEW",  timestamp: "2024-01-15T15:30:00Z", reviewer: "Bob Patel",   processingTime: "8s"  },
+      { submissionId: "SUB-2024-001239", organizationName: "National Health Alliance",    status: "APPROVED",       riskScore: 11, decision: "AUTO_APPROVE",  timestamp: "2024-01-15T15:45:00Z", reviewer: "—",           processingTime: "14s" },
+      { submissionId: "SUB-2024-001240", organizationName: "Premier Plan Services",       status: "APPROVED",       riskScore: 29, decision: "AUTO_APPROVE",  timestamp: "2024-01-15T16:00:00Z", reviewer: "—",           processingTime: "10s" },
+      { submissionId: "SUB-2024-001241", organizationName: "Coastal Health Co.",          status: "PENDING_REVIEW", riskScore: 47, decision: "HUMAN_REVIEW",  timestamp: "2024-01-15T16:15:00Z", reviewer: "Alice Wong",  processingTime: "9s"  },
+      { submissionId: "SUB-2024-001242", organizationName: "Mountain View Medplans",      status: "APPROVED",       riskScore: 15, decision: "AUTO_APPROVE",  timestamp: "2024-01-15T16:30:00Z", reviewer: "—",           processingTime: "12s" },
+      { submissionId: "SUB-2024-001243", organizationName: "Quick Cover Insurance",       status: "APPROVED",       riskScore: 25, decision: "AUTO_APPROVE",  timestamp: "2024-01-15T16:45:00Z", reviewer: "—",           processingTime: "11s" },
+    ],
+    reviewers: [
+      { name: "Alice Wong",  level: "SENIOR", workload: 3, maxWorkload: 5 },
+      { name: "Bob Patel",   level: "JUNIOR", workload: 1, maxWorkload: 3 },
+      { name: "Carol Smith", level: "LEAD",   workload: 0, maxWorkload: 8 },
+    ]
+  };
+
+  // ── Connect to real API ──
+  function connectToApi() {
+    const val = document.getElementById("apiUrlInput").value.trim();
+    if (!val) return;
+    apiUrl = val;
+    loadData();
+  }
+
+  // ── Main load ──
+  async function loadData() {
+    let data;
+    if (apiUrl) {
+      try {
+        const res = await fetch(apiUrl);
+        const json = await res.json();
+        data = typeof json.body === "string" ? JSON.parse(json.body) : json;
+      } catch (e) {
+        console.error("API fetch failed, falling back to demo data:", e);
+        data = DEMO_DATA;
+      }
+    } else {
+      data = DEMO_DATA;
+    }
+    render(data);
+  }
+
+  // ── Render ──
+  function render(d) {
+    const total = d.totalCount || 0;
+
+    // Stat cards
+    document.getElementById("totalCount").textContent    = total;
+    document.getElementById("approvedCount").textContent = d.approvedCount || 0;
+    document.getElementById("pendingCount").textContent  = d.pendingCount  || 0;
+    document.getElementById("rejectedCount").textContent = d.rejectedCount || 0;
+    document.getElementById("approvedPct").textContent   = total ? pct(d.approvedCount, total) + " of total" : "—";
+    document.getElementById("rejectedPct").textContent   = total ? pct(d.rejectedCount, total) + " of total" : "—";
+
+    // Processing banner
+    const banner = document.getElementById("processingBanner");
+    if (d.currentlyProcessing) {
+      banner.style.display = "flex";
+      document.getElementById("processingId").textContent = d.currentlyProcessing;
+    } else {
+      banner.style.display = "none";
+    }
+
+    // Submissions table
+    renderTable(d.recentSubmissions || []);
+
+    // Reviewers
+    renderReviewers(d.reviewers || []);
+
+    // Timestamp
+    document.getElementById("lastUpdated").textContent = "Updated " + new Date().toLocaleTimeString();
+  }
+
+  function renderTable(rows) {
+    const wrap = document.getElementById("tableWrap");
+    document.getElementById("subsBadge").textContent = rows.length + " submissions";
+    if (!rows.length) {
+      wrap.innerHTML = '<div class="empty-state">No submissions found.</div>';
+      return;
+    }
+    wrap.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Submission ID</th>
+            <th>Organization</th>
+            <th>Status</th>
+            <th>Risk Score</th>
+            <th>Reviewer</th>
+            <th>Time</th>
+            <th>Processed At</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map(r => `
+            <tr>
+              <td class="sub-id">${esc(r.submissionId)}</td>
+              <td class="org-name">${esc(r.organizationName)}</td>
+              <td><span class="badge-status ${esc(r.status)}">${friendlyStatus(r.status)}</span></td>
+              <td class="risk-cell">${riskBar(r.riskScore)}</td>
+              <td>${esc(r.reviewer) || '<span style="color:#a0aec0">—</span>'}</td>
+              <td style="color:#718096">${esc(r.processingTime)}</td>
+              <td style="color:#718096;font-size:12px">${formatTs(r.timestamp)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>`;
+  }
+
+  function renderReviewers(reviewers) {
+    const el = document.getElementById("reviewerList");
+    document.getElementById("reviewerBadge").textContent = reviewers.length + " active";
+    if (!reviewers.length) {
+      el.innerHTML = '<div class="empty-state">No reviewers found.</div>';
+      return;
+    }
+    el.innerHTML = reviewers.map(r => {
+      const pctW = r.maxWorkload ? Math.round((r.workload / r.maxWorkload) * 100) : 0;
+      const barColor = pctW >= 80 ? "#fc8181" : pctW >= 50 ? "#f6ad55" : "#68d391";
+      return `
+        <div class="reviewer-item">
+          <div class="reviewer-top">
+            <span class="reviewer-name">${esc(r.name)}</span>
+            <span class="reviewer-level level-${esc(r.level)}">${esc(r.level)}</span>
+          </div>
+          <div class="workload-bar-bg">
+            <div class="workload-bar-fill" style="width:${pctW}%;background:${barColor}"></div>
+          </div>
+          <div class="workload-meta">
+            <span>${r.workload} / ${r.maxWorkload} cases</span>
+            <span>${pctW}% capacity</span>
+          </div>
+        </div>`;
+    }).join("");
+  }
+
+  // ── Helpers ──
+  function esc(s) {
+    if (s == null) return "";
+    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+
+  function pct(n, total) {
+    return total ? Math.round((n / total) * 100) + "%" : "0%";
+  }
+
+  function friendlyStatus(s) {
+    return { APPROVED: "Approved", REJECTED: "Rejected", PENDING_REVIEW: "Pending Review", PENDING: "Pending", PROCESSING: "Processing" }[s] || s;
+  }
+
+  function riskBar(score) {
+    const s = Number(score) || 0;
+    const color = s <= 30 ? "#48bb78" : s <= 70 ? "#ed8936" : "#fc8181";
+    return `<div class="risk-bar-wrap">
+      <div class="risk-bar-bg"><div class="risk-bar-fill" style="width:${s}%;background:${color}"></div></div>
+      <span class="risk-val" style="color:${color}">${s}</span>
+    </div>`;
+  }
+
+  function formatTs(ts) {
+    if (!ts) return "—";
+    try { return new Date(ts).toLocaleString(); } catch { return ts; }
+  }
+
+  // ── Auto-refresh every 30s ──
+  loadData();
+  setInterval(loadData, 30000);
+</script>
+</body>
+</html>

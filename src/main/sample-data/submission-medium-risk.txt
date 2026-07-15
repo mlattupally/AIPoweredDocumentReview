@@ -1,0 +1,68 @@
+HEALTHCARE PLAN SUBMISSION
+==========================
+
+SUBMISSION ID: SUB-2024-002456
+SUBMISSION DATE: 2024-01-16
+ORGANIZATION ID: ORG-HC-55443
+ORGANIZATION NAME: Valley Health Insurance Co
+
+CONTACT INFORMATION
+-------------------
+Primary Contact: Robert Martinez
+Title: VP of Operations
+Email: rmartinez@valleyhealth.com
+Phone: (555) 987-6543
+Secondary Contact: Lisa Wong
+Email: lwong@valleyhealth.com
+Phone: (555) 987-6544
+
+PLAN DETAILS
+------------
+
+PLAN 1:
+Plan Name: Budget Bronze
+Plan Type: HMO
+Coverage Area: Nevada, Utah
+Premium (Monthly): $285
+Deductible (Annual): $5500
+Out-of-Pocket Maximum: $8500
+Copay Primary Care: $35
+Copay Specialist: $70
+Emergency Room: $500
+Prescription Drug Coverage: Generic $15, Brand $60, Specialty $150
+Network Size: 5000 providers
+Effective Date: 2024-04-01
+
+PLAN 2:
+Plan Name: Standard Silver
+Plan Type: EPO
+Coverage Area: Nevada
+Premium (Monthly): $520
+Deductible (Annual): Not specified
+Out-of-Pocket Maximum: $7000
+Copay Primary Care: $30
+Copay Specialist: $55
+Emergency Room: $400
+Prescription Drug Coverage: Generic $10, Brand $50
+Network Size: 8000 providers
+Effective Date: 2024-04-01
+
+COMPLIANCE INFORMATION
+----------------------
+ACA Compliant: Yes
+State License Number: NV-INS-443322
+Federal Tax ID: 88-9876543
+NAIC Company Code: 67890
+Previous Submissions: 5 (3 approved, 2 pending review)
+Outstanding Issues: Pending documentation from state regulator
+
+ATTESTATION
+-----------
+I hereby certify that all information provided in this submission is accurate and complete to the best of my knowledge. I understand that any false or misleading information may result in rejection of this submission and potential penalties.
+
+Attested By: Robert Martinez
+Title: VP of Operations
+Date: 2024-01-16
+Signature: [Electronic Signature on File]
+
+END OF SUBMISSION

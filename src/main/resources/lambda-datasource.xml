@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop
+	 http://www.springframework.org/schema/aop/spring-aop-4.3.xsd      
+	http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-4.3.xsd    
+	http://www.springframework.org/schema/context
+	 http://www.springframework.org/schema/context/spring-context-4.3.xsd  
+	http://www.springframework.org/schema/jee
+	 http://www.springframework.org/schema/jee/spring-jee-4.3.xsd       
+	http://www.springframework.org/schema/tx
+	 http://www.springframework.org/schema/tx/spring-tx-4.3.xsd   
+	http://www.springframework.org/schema/jdbc
+	 http://www.springframework.org/schema/jdbc/spring-jdbc-4.3.xsd
+	http://www.springframework.org/schema/data/jpa
+	 http://www.springframework.org/schema/data/jpa/spring-jpa-1.11.xsd">
+
+ <context:component-scan use-default-filters="false" base-package="org.ets.ibt2.xmlgeneration">	
+
+    <!-- Scans within the base package of the application for @Components to configure as beans -->
+    <!--context:component-scan use-default-filters="false" base-package="org.ets.ibt2.xmlgeneration,org.ets.ibt2.cloud.services.rds">    									  	
+ <context:include-filter type="assignable" expression="org.ets.ibt2.cloud.services.rds.domain.BaseDomain"/>    	
+ <context:include-filter type="assignable" expression="org.ets.ibt2.cloud.services.rds.domain.BaseDomainEntity"/>    	
+ <context:include-filter type="assignable" expression="org.ets.ibt2.cloud.services.rds.domain.BaseDomainEntity"/>    	
+ <context:include-filter type="assignable" expression="org.ets.ibt2.cloud.services.rds.dao.BaseDao"/> 
+ <context:include-filter type="assignable" expression="org.ets.ibt2.cloud.services.rds.dao.ApntmtDao"/>    	
+ <context:include-filter type="assignable" expression="org.ets.ibt2.cloud.services.rds.dao.impl.BaseDaoImpl"/>    	
+ <context:include-filter type="assignable" expression="org.ets.ibt2.cloud.services.rds.dao.impl.ApntmtDaoImpl"/>    	
+ <context:include-filter type="assignable" expression="org.ets.ibt2.cloud.services.rds.service.ApntmtService"/>    									  
+ <context:include-filter type="assignable" expression="org.ets.ibt2.cloud.services.rds.service.impl.ApntmtServiceImpl"/>    									  
+ <context:include-filter type="assignable" expression="org.ets.ibt2.cloud.services.rds.domain.ApntmtPK"/>    									  
+ <context:include-filter type="assignable" expression="org.ets.ibt2.cloud.services.rds.domain.Apntmt"/> 
+ <context:exclude-filter type="regex"      expression="org.ets.ibt2.cloud.services.rds.*"/-->    	
+ <!-- 		   org.ets.ibt2.cloud.services.rds.domain.ApntmtPK,
+        								  org.ets.ibt2.cloud.services.rds.domain.Apntmt,
+    									  org.ets.ibt2.cloud.services.rds.domain.BaseDomain,
+    									  org.ets.ibt2.cloud.services.rds.domain.BaseDomainAuditEntity,    									  
+    									  org.ets.ibt2.cloud.services.rds.domain.BaseDomainEntity,
+    									  org.ets.ibt2.cloud.services.rds.dao.BaseDao,    									  
+    									  org.ets.ibt2.cloud.services.rds.dao.ApntmtDao,
+    									  org.ets.ibt2.cloud.services.rds.dao.impl.BaseDaoImpl,
+    								      org.ets.ibt2.cloud.services.rds.dao.impl.ApntmtDaoImpl,
+    								      org.ets.ibt2.cloud.services.rds.service.ApntmtService,
+    								      org.ets.ibt2.cloud.services.rds.service.impl.ApntmtServiceImpl,
+    								      org.ets.ibt2.cloud.services.rds.domain.ApntmtPK
+    								      org.ets.ibt2.cloud.services.rds.domain.Apntmt>     							
+	</context:component-scan-->
+		<!-- org.ets.ibt2.common.util,
+     									org.ets.ibt2.cloud.common,
+										orgets.ibt2.cloud.services.util,										
+										org.ets.ibt2.cloud.service,
+										org.ets.ibt2.cloud.services,
+										org.ets.ibt2.cloud.common.service"-->
+</context:component-scan>
+
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="#{systemProperties['database.driverClassName']}"/>
+		<property name="url"  value="#{systemProperties['database.url']}" />
+		<property name="username"  value="#{systemProperties['database.username']}"/>
+		<property name="password"  value="#{systemProperties['database.password']}"/>
+	</bean>
+
+    
+
+    
+    <bean id="clientConfiguration" class="com.amazonaws.ClientConfiguration">
+		<property name="maxConnections" value="10" />
+	</bean>
+	
+	<bean id="amazonSQS" class="com.amazonaws.services.sqs.AmazonSQSClient">
+		<constructor-arg name="clientConfiguration" ref="clientConfiguration"/>
+	</bean>	
+	<bean id="sesClient" class="com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient">		
+	</bean>	  
+
+	<bean id="fIFOQueueServiceImpl" class="org.ets.ibt2.cloud.common.service.impl.FIFOQueueServiceImpl">
+	</bean>		
+	
+	<bean id="simpleMailServiceImpl" class="org.ets.ibt2.cloud.services.notification.mail.SimpleMailServiceImpl"/>		
+	
+	<!--bean id="apntmtDao" class="org.ets.ibt2.cloud.services.rds.dao.impl.ApntmtDaoImpl">		
+	</bean>
+	<bean id="apntmtServiceImpl" class="org.ets.ibt2.cloud.services.rds.service.impl.ApntmtServiceImpl">		
+	</bean>		
+	<bean id="tableNameOverride" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+   		<property name="arguments" value="#{propertyRef['env']=='developers'?'ets-ibt2-'+ propertyRef['env'] + '-' + propertyRef['developer'] + '-':'ets-ibt2-'+ propertyRef['env'] + '-'}"/> 
+   		<property name="arguments" value="ets-ibtdel-developers-panderson-"/>
+        <property name="staticMethod" value="com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride.withTableNamePrefix"/>
+    </bean>  
+    <bean id="etsDynamoDBMapperConfig" class="com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig">
+        <constructor-arg index="0" ref="tableNameOverride" />
+    </bean>
+	
+	<bean id="etsDynamoDBClient" class="com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient">
+		<property name="endpoint" value="${dynamodb_endpoint_url}" />
+	</bean>
+
+	<bean id="etsDynamoDBMapper" class="com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper">
+		<constructor-arg ref="etsDynamoDBClient" />
+		<constructor-arg ref="etsDynamoDBMapperConfig" />
+		<constructor-arg ref="defaultAWSCredentialsProviderChain" />
+	</bean>
+
+	<bean id="defaultAWSCredentialsProviderChain" class="com.amazonaws.auth.DefaultAWSCredentialsProviderChain">
+	</bean>
+	
+	<tx:annotation-driven transaction-manager="txManager" />
+	
+		<bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/>
+		<bean id="txManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+			<property name="entityManagerFactory" ref="entityManagerFactory"/>
+			<property name="jpaDialect" ref="jpaDialect"/>
+		</bean>
+
+
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="packagesToScan" value="org.ets.ibt2.cloud.services.rds.domain" />
+		<property name="persistenceXmlLocation" value="classpath:META-INF/spring-persistence.xml" />
+		<property name="persistenceUnitName" value="ibt2-xml-generation" />
+		<property name="dataSource" ref="dataSource" />
+		<property name="jpaVendorAdapter">
+				<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+		</property>
+			<property name="jpaProperties">
+				<props>
+					<prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
+					<prop key="hibernate.show_sql">true</prop>
+					<prop key="hibernate.format_sql">true</prop>
+					<prop key="hibernate.archive.autodetection"></prop>
+				</props>
+			</property>
+	</bean-->
+	  
+	  
+</beans>

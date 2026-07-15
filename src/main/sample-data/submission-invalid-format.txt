@@ -1,0 +1,30 @@
+Hey there!
+
+So we want to submit some health insurance plans. Here's the info:
+
+Company: HealthyLife Insurance
+Contact: Bob Smith (bob@healthylife.com)
+Org ID: ORG-HC-99123
+
+We have 3 plans:
+1) Bronze plan - $400/month, $3000 deductible
+2) Silver plan - $600/month, $2000 deductible
+3) Gold plan - $850/month, $1000 deductible
+
+All plans cover California and they're all HMO plans. Network has about 10,000 doctors.
+
+Copays are:
+- Doctor visit: $25
+- Specialist: $50
+- ER: $350
+
+We're ACA compliant and our license is CA-INS-991122. Tax ID is 94-8765432.
+
+This is our 3rd submission. First two were approved.
+
+Let me know if you need anything else!
+
+Thanks,
+Bob
+
+P.S. - Plans start March 1st, 2024

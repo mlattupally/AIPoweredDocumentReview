@@ -1,0 +1,68 @@
+HEALTHCARE PLAN SUBMISSION
+==========================
+
+SUBMISSION ID: SUB-2024-001234
+SUBMISSION DATE: 2024-01-15
+ORGANIZATION ID: ORG-HC-99887
+ORGANIZATION NAME: BlueCross Health Plans Inc.
+
+CONTACT INFORMATION
+-------------------
+Primary Contact: Sarah Johnson
+Title: Director of Plan Management
+Email: sjohnson@bluecross-health.com
+Phone: (555) 123-4567
+Secondary Contact: Michael Chen
+Email: mchen@bluecross-health.com
+Phone: (555) 123-4568
+
+PLAN DETAILS
+------------
+
+PLAN 1:
+Plan Name: Bronze Essential Care
+Plan Type: HMO
+Coverage Area: California, Nevada, Arizona
+Premium (Monthly): $450
+Deductible (Annual): $2500
+Out-of-Pocket Maximum: $7500
+Copay Primary Care: $25
+Copay Specialist: $50
+Emergency Room: $350
+Prescription Drug Coverage: Generic $10, Brand $45, Specialty $100
+Network Size: 15000 providers
+Effective Date: 2024-03-01
+
+PLAN 2:
+Plan Name: Silver Plus
+Plan Type: PPO
+Coverage Area: California, Nevada, Arizona, Oregon, Washington
+Premium (Monthly): $650
+Deductible (Annual): $1500
+Out-of-Pocket Maximum: $6000
+Copay Primary Care: $20
+Copay Specialist: $40
+Emergency Room: $250
+Prescription Drug Coverage: Generic $5, Brand $35, Specialty $75
+Network Size: 25000 providers
+Effective Date: 2024-03-01
+
+COMPLIANCE INFORMATION
+----------------------
+ACA Compliant: Yes
+State License Number: CA-INS-887766
+Federal Tax ID: 94-1234567
+NAIC Company Code: 12345
+Previous Submissions: 2 (all approved)
+Outstanding Issues: None
+
+ATTESTATION
+-----------
+I hereby certify that all information provided in this submission is accurate and complete to the best of my knowledge. I understand that any false or misleading information may result in rejection of this submission and potential penalties.
+
+Attested By: Sarah Johnson
+Title: Director of Plan Management
+Date: 2024-01-15
+Signature: [Electronic Signature on File]
+
+END OF SUBMISSION

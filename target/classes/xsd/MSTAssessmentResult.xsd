@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<xs:schema id="MSTAssessmentResult" 
+                  targetNamespace="http://crds.ets.org/crdsnet/schema/MSTAssessmentResult"
+                  elementFormDefault="qualified"
+                  xmlns="http://crds.ets.org/crdsnet/schema/MSTAssessmentResult"
+                  xmlns:xs="http://www.w3.org/2001/XMLSchema" version="01.00">
+                 	
+	<xs:element name="MSTAssessmentResult">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="MetaDataField" type="MSTMetaDataFieldType" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="Steps" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Step" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="MetaDataField" type="MSTMetaDataFieldType" minOccurs="0" maxOccurs="unbounded"/>
+									</xs:sequence>
+									<xs:attribute name="Id" type="xs:string"/>
+								</xs:complexType>								
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="AssessmentUnits">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="AssessmentUnit" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:attribute name="Id" type="xs:string"/>
+									<xs:attribute name="DeliverySequenceNo" type="xs:int"/>
+									<xs:attribute name="SelectionSequenceNo" type="xs:int"/>
+									<xs:attribute name="GroupID" type="xs:string"/>
+									<xs:attribute name="DeliveryStepID" type="xs:string"/>
+									<xs:attribute name="SectionID" type="xs:string"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>					
+				</xs:element>				
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="MSTMetaDataFieldType">
+		<xs:sequence>
+			<xs:element name="MetaDataFieldName" type="xs:string" />
+			<xs:element name="MetaDataFieldValue" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>
